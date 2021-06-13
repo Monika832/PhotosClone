@@ -7,6 +7,7 @@
       header-text-variant="primary"
     >
      <h2 class="h2 text-center text-primary my-0 py-0">{{formType|capitalize}}</h2>
+     <h3 class="text-danger">{{error_message}}</h3>
       <b-form class="my-0" @submit="submit" @reset="reset">
         <b-form-group
           v-if="formType=='signup'"
@@ -14,11 +15,13 @@
           label="Name:"
           label-for="email"
           class="my-0"
+
         >
           <b-form-input
             id="name"
             v-model="form.name"
             placeholder="Enter name"
+            v-bind:disabled="inProgress"
             required
           ></b-form-input>
         </b-form-group>
@@ -33,6 +36,7 @@
             v-model="form.email"
             type="email"
             placeholder="Enter email"
+            v-bind:disabled="inProgress"
             required
           ></b-form-input>
         </b-form-group>
@@ -47,11 +51,13 @@
             v-model="form.password"
             type="password"
             placeholder="Enter password"
+            v-bind:disabled="inProgress"
             required
           ></b-form-input>
         </b-form-group>
-        <b-button class="mt-3" variant="primary" type="submit" block>{{formType|capitalize}}</b-button>
-      <b-button class="mt-2" variant="danger" type="reset" block>Cancel</b-button>
+        <b-button class="mt-3" variant="primary" type="submit" v-show="!inProgress" block>{{formType|capitalize}}</b-button>
+        <b-button class="mt-2" variant="danger" type="reset" v-show="!inProgress" block>Cancel</b-button>
+        <b-button class="mt-2" variant="secondary" v-show="inProgress" block>Please wait..</b-button>
       </b-form>
     </b-modal>
     <div id="banner">
@@ -84,7 +90,9 @@ export default {
     return {
       modalShow: false,
       formType: "login",
-      form:{email:"",name:"",password:""}
+      form:{email:"",name:"",password:""},
+      inProgress:false,
+      error_message:""
     };
   },
   methods: {
@@ -94,8 +102,19 @@ export default {
     },
     submit:function(e){
         e.preventDefault();
-        // COde to post data
-        console.log(this.$data.form);
+        let vm=this;
+        this.axios.post("/user/"+this.$data.formType,this.$data.form,{headers:{"Authorization":""}}).then((res)=>{
+          vm.$data.error_message="";
+          let user = res.data;
+          localStorage.setItem("user",JSON.stringify(user));
+          vm.axios.defaults.headers.common['Authorization'] = "Token "+user.token;
+          vm.$router.push("/dashboard");
+        }).catch((err)=>{
+          vm.$data.error_message=err.response.data.message;
+        }).finally(()=>{
+          vm.$data.inProgress=false;
+        });
+        this.$data.inProgress=true;
     },
     reset:function(e){
         e.preventDefault();

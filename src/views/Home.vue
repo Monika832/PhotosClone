@@ -12,6 +12,13 @@ import Background from '../components/background/Background.vue';
 export default {
     name:"Home",
     components: {Banner,Background},
+    mounted:function(){
+      let user = localStorage.getItem("user");
+      if(user)
+      {
+        this.$router.push("/dashboard");
+      }
+    }
 }
 </script>
 
