@@ -8,7 +8,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
 Vue.config.productionTip = false;
-axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = 'https://photosclonebymonika.herokuapp.com/';
 
 new Vue({
   router,
