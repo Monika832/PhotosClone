@@ -1,4 +1,9 @@
-# photos
+# Photos Clone
+
+## [Link to Website](https://photosclonebymonika.herokuapp.com/)
+### Demo Email : demo@mail.com
+### Demo Password: demo
+
 
 ## Project setup
 ```
@@ -14,11 +19,3 @@ npm run serve
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
